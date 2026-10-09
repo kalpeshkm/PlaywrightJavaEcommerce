@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="All Test Suite">
+    <listeners>
+        <listener class-name=
+                          "com.ecommerce.listeners.TestListener"/>
+    </listeners>
+    <test verbose="2" preserve-order="true"
+          name="C:/Users/kalpe/Downloads/teamcamp-playwright-automation/PlaywrightJavaEcommerce">
+        <classes>
+            <class name="com.ecommerce.tests.CartTest">
+                <methods>
+                    <include name="addProductToCartTest"/>
+                </methods>
+            </class>
+            <class name="com.ecommerce.tests.CheckoutTest">
+                <methods>
+                    <include name="verifySuccessfulCheckout"/>
+                </methods>
+            </class>
+            <class name="com.ecommerce.tests.LoginTest">
+                <methods>
+                    <include name="validLoginTest"/>
+                    <include name="invalidLoginTest"/>
+                </methods>
+            </class>
+            <class name="com.ecommerce.tests.OrderConfirmationTest">
+                <methods>
+                    <include name="verifyOrderConfirmation"/>
+                </methods>
+            </class>
+            <class name="com.ecommerce.tests.PaymentTest">
+                <methods>
+                    <include name="verifyPaymentAndOrderSummary"/>
+                </methods>
+            </class>
+            <class name="com.ecommerce.tests.ProductDetailsTest">
+                <methods>
+                    <include name="verifyProductDetailsAndAddToCart"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+</suite>
