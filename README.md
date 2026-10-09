@@ -1,161 +1,158 @@
-# Playwright Java E-commerce Automation
+# Playwright Java E-Commerce Automation Framework
 
 ## Project Overview
 
-This project automates the testing of an e-commerce website using Playwright with Java and TestNG. It covers important user flows such as login, adding products to the cart, and completing the checkout process.
+This project is an automation testing framework for an e-commerce website using Playwright with Java. It covers key functionalities such as login, product details, cart operations, checkout, payment, and order confirmation.
 
-The project follows the Page Object Model (POM) to keep test scripts and page locators organized and maintainable.
+The framework uses TestNG for test execution and Extent Reports for test execution reports.
 
 ## Technologies Used
 
-* Java 21
-* Playwright for Java
-* TestNG
-* Maven
-* Extent Reports
-* IntelliJ IDEA
-* Git and GitHub
-
-## Features
-
-* Automated login testing
-* Add products to the shopping cart
-* Cart product verification
-* Checkout information validation
-* Customer details submission
-* Order overview validation
-* Order completion verification
-* Test assertions using TestNG
-* Page Object Model (POM) structure
-* Extent Reports dependency for test reporting
+* **Programming Language:** Java
+* **Automation Tool:** Playwright
+* **Test Framework:** TestNG
+* **Build Tool:** Maven
+* **Reporting:** Extent Reports
+* **IDE:** IntelliJ IDEA
 
 ## Project Structure
 
 ```text
 PlaywrightJavaEcommerce/
-│
+├── .idea/
+├── .mvn/
+├── reports/
+│   └── ExtentReport.html
+├── screenshots/
+│   └── extent-report.png
 ├── src/
 │   ├── main/
-│   │   └── java/
-│   │       └── com/ecommerce/
-│   │           └── pages/
-│   │               ├── LoginPage.java
-│   │               ├── InventoryPage.java
-│   │               └── CheckoutPage.java
-│   │
 │   └── test/
 │       └── java/
-│           └── com/ecommerce/
+│           └── ecommerce/
 │               ├── base/
 │               │   └── BaseTest.java
+│               ├── listeners/
+│               │   ├── ExtentReportManager.java
+│               │   └── TestListener.java
+│               ├── pages/
+│               │   ├── CheckoutPage.java
+│               │   ├── InventoryPage.java
+│               │   ├── LoginPage.java
+│               │   ├── OrderConfirmationPage.java
+│               │   ├── PaymentPage.java
+│               │   └── ProductDetailsPage.java
 │               └── tests/
 │                   ├── CartTest.java
-│                   └── CheckoutTest.java
-│
+│                   ├── CheckoutTest.java
+│                   ├── LoginTest.java
+│                   ├── OrderConfirmationTest.java
+│                   ├── PaymentTest.java
+│                   └── ProductDetailsTest.java
+├── target/
+├── .gitignore
 ├── pom.xml
 ├── README.md
-├── .gitignore
 └── testng.xml
 ```
 
-*Note: Adjust the structure above to match the files actually present in your project.*
+## Test Scenarios
+
+The framework includes test classes for the following functionalities:
+
+* **Login Test:** Validates user login functionality.
+* **Product Details Test:** Verifies product information.
+* **Cart Test:** Checks adding products to the shopping cart.
+* **Checkout Test:** Validates checkout functionality.
+* **Payment Test:** Tests the payment process.
+* **Order Confirmation Test:** Verifies order completion.
+
+## Framework Features
+
+* Page Object Model (POM) structure.
+* Reusable base test setup.
+* TestNG test execution.
+* Extent Reports integration.
+* Centralized test listener.
+* HTML test execution report.
+* Screenshot of the execution report.
 
 ## Prerequisites
 
-Install the following:
+Install the following before running the project:
 
-1. JDK 21
-2. IntelliJ IDEA
-3. Git
-4. Maven (or use the Maven wrapper if your project includes one)
+* Java JDK 21
+* Maven
+* IntelliJ IDEA or another Java IDE
+* Git (optional, for version control)
 
-## Installation and Setup
+## How to Run the Project
 
-### 1. Clone the repository
+**1. Clone the repository**
 
 ```bash
 git clone https://github.com/YOUR-USERNAME/PlaywrightJavaEcommerce.git
-cd PlaywrightJavaEcommerce
 ```
 
-Replace `YOUR-USERNAME` with your GitHub username.
+**2. Open the project**
 
-### 2. Install project dependencies
+Open the project folder in IntelliJ IDEA.
+
+**3. Check Java and Maven**
+
+```bash
+java -version
+mvn -version
+```
+
+**4. Install dependencies**
+
+Open a terminal in the project root and run:
 
 ```bash
 mvn clean install
 ```
 
-### 3. Install Playwright browsers
-
-Run the following Maven command from the project root:
-
-```bash
-mvn exec:java -e -Dexec.mainClass=com.microsoft.playwright.CLI -Dexec.args="install"
-```
-
-If the command fails because the Playwright CLI is not configured in the Maven project, install the browsers using the Playwright CLI with the project's dependency classpath or the setup supported by your project.
-
-## Running the Tests
-
-### Run all tests
+**5. Execute the test suite**
 
 ```bash
 mvn test
 ```
 
-### Run a specific test class
+You can also run `testng.xml` directly from IntelliJ IDEA to execute the configured TestNG suite.
 
-```bash
-mvn -Dtest=CartTest test
-```
+## Test Execution Report
 
-```bash
-mvn -Dtest=CheckoutTest test
-```
+The framework generates an HTML report using Extent Reports.
 
-You can also run a test class directly from IntelliJ IDEA by right-clicking it and selecting **Run**.
-
-## Test Scenarios
-
-| Test Class     | Scenario                                                              |
-| -------------- | --------------------------------------------------------------------- |
-| `CartTest`     | Login, add product, and verify the cart                               |
-| `CheckoutTest` | Login, add product, enter customer information, and complete checkout |
-
-## Test Reports
-
-The project includes the Extent Reports dependency. If report generation is configured in the project, run the tests and open the generated HTML report.
-
-The report path depends on your Extent Reports configuration. Common examples include:
+**Report location:**
 
 ```text
-test-output/
-reports/
-ExtentReport.html
+reports/ExtentReport.html
 ```
 
-Check your report configuration to confirm the actual output path.
+After test execution, open `reports/ExtentReport.html` in a web browser to view the report, provided the report generation is configured to use this path.
 
-## Design Pattern
+### Extent Report Screenshot
 
-**Page Object Model (POM)**
+![Extent Report Screenshot](screenshots/extent-report.png)
 
-The project separates page locators and browser actions from test cases. This improves code reusability, readability, and maintenance.
+## Configuration Files
+
+* `pom.xml` — Maven dependencies and build configuration.
+* `testng.xml` — TestNG suite configuration.
+* `.gitignore` — Specifies files and folders excluded from Git version control.
 
 ## Future Enhancements
 
-* Data-driven testing
-* Cross-browser testing
-* Screenshot capture on test failure
-* Automatic report generation
-* GitHub Actions CI/CD integration
+* Add data-driven testing.
+* Add cross-browser testing.
+* Integrate the framework with Jenkins.
+* Add automatic screenshots for failed tests.
+* Integrate API testing where required.
 
 ## Author
 
-Kalpesh Mali
-QA Manual & Automation Engineer
+**Kalpesh Mali**
 
-## Disclaimer
-
-This project is intended for learning and demonstrating automation testing practices. Use a test environment and test credentials only.
+QA Automation Tester
