@@ -13,9 +13,24 @@
                     <include name="addProductToCartTest"/>
                 </methods>
             </class>
+            <class name="com.ecommerce.tests.CartValidationTest">
+                <methods>
+                    <include name="verifyProductDetailsInCart"/>
+                    <include name="verifyProductCanBeRemovedFromCart"/>
+                    <include name="verifyCheckoutButtonIsDisplayed"/>
+                </methods>
+            </class>
             <class name="com.ecommerce.tests.CheckoutTest">
                 <methods>
                     <include name="verifySuccessfulCheckout"/>
+                </methods>
+            </class>
+            <class name="com.ecommerce.tests.CheckoutValidationTest">
+                <methods>
+                    <include name="verifyFirstNameRequiredValidation"/>
+                    <include name="verifyLastNameRequiredValidation"/>
+                    <include name="verifyPostalCodeRequiredValidation"/>
+                    <include name="verifyCheckoutWithValidInformation"/>
                 </methods>
             </class>
             <class name="com.ecommerce.tests.LoginTest">

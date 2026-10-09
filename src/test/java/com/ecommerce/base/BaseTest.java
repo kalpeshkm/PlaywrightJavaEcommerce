@@ -2,8 +2,15 @@
 package com.ecommerce.base;
 
 import com.microsoft.playwright.*;
+import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class BaseTest {
 
@@ -28,19 +35,65 @@ public class BaseTest {
         page.navigate("https://www.saucedemo.com/");
     }
 
-    @AfterMethod
-    public void tearDown() {
+    // Allows test classes to access the active Playwright page
+    public Page getPage() {
+        return page;
+    }
 
-        if (context != null) {
-            context.close();
-        }
+    // Capture a screenshot before closing the browser
+    @AfterMethod(alwaysRun = true)
+    public void tearDown(ITestResult result) {
 
-        if (browser != null) {
-            browser.close();
-        }
+        try {
+            if (result.getStatus() == ITestResult.FAILURE
+                    && page != null
+                    && !page.isClosed()) {
 
-        if (playwright != null) {
-            playwright.close();
+                Path screenshotDirectory =
+                        Paths.get("screenshots", "failures");
+
+                Files.createDirectories(screenshotDirectory);
+
+                String timestamp = LocalDateTime.now().format(
+                        DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")
+                );
+
+                String testName = result.getMethod().getMethodName()
+                        .replaceAll("[^a-zA-Z0-9_-]", "_");
+
+                Path screenshotPath = screenshotDirectory.resolve(
+                        testName + "_" + timestamp + ".png"
+                );
+
+                page.screenshot(
+                        new Page.ScreenshotOptions()
+                                .setPath(screenshotPath)
+                                .setFullPage(true)
+                );
+
+                System.out.println(
+                        "Failure screenshot saved: "
+                                + screenshotPath.toAbsolutePath()
+                );
+            }
+
+        } catch (Exception e) {
+            System.err.println(
+                    "Failed to capture screenshot: " + e.getMessage()
+            );
+
+        } finally {
+            if (context != null) {
+                context.close();
+            }
+
+            if (browser != null) {
+                browser.close();
+            }
+
+            if (playwright != null) {
+                playwright.close();
+            }
         }
     }
 }
