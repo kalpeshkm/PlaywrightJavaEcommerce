@@ -2,7 +2,10 @@ package com.ecommerce.tests;
 
 import com.ecommerce.base.BaseTest;
 import com.ecommerce.pages.CheckoutValidationPage;
+import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
+import com.microsoft.playwright.TimeoutError;
+import com.microsoft.playwright.options.WaitForSelectorState;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -12,39 +15,123 @@ public class CheckoutValidationTest extends BaseTest {
 
         page.navigate("https://www.saucedemo.com/");
 
-        page.locator("[data-test='username']")
-                .fill("standard_user");
+        page.locator("[data-test='username']").fill("standard_user");
+        page.locator("[data-test='password']").fill("secret_sauce");
+        page.locator("[data-test='login-button']").click();
 
-        page.locator("[data-test='password']")
-                .fill("secret_sauce");
+        try {
+            page.waitForURL(
+                    "**/inventory.html",
+                    new Page.WaitForURLOptions().setTimeout(15000)
+            );
+        } catch (TimeoutError e) {
+            printDebugInfo(page);
+            Assert.fail("Login failed. Inventory page was not opened.");
+        }
 
-        page.locator("[data-test='login-button']")
-                .click();
+        Locator inventoryList = page.locator(".inventory_list");
 
-        page.waitForURL("**/inventory.html");
+        try {
+            inventoryList.waitFor(
+                    new Locator.WaitForOptions()
+                            .setState(WaitForSelectorState.VISIBLE)
+                            .setTimeout(15000)
+            );
+        } catch (TimeoutError e) {
+            printDebugInfo(page);
+            Assert.fail(
+                    "Inventory URL opened, but inventory list is not visible."
+            );
+        }
 
         Assert.assertTrue(
-                page.locator(".inventory_list").isVisible(),
+                inventoryList.isVisible(),
                 "Inventory page should be displayed"
         );
 
-        page.locator("[data-test='add-to-cart-sauce-labs-backpack']")
-                .click();
+        Locator addToCartButton = page.locator(
+                "[data-test='add-to-cart-sauce-labs-backpack']"
+        );
+
+        addToCartButton.waitFor(
+                new Locator.WaitForOptions()
+                        .setState(WaitForSelectorState.VISIBLE)
+                        .setTimeout(10000)
+        );
+
+        addToCartButton.click();
+
+        Assert.assertEquals(
+                page.locator(".shopping_cart_badge").innerText(),
+                "1",
+                "Product was not added to cart"
+        );
 
         page.locator(".shopping_cart_link").click();
-        page.waitForURL("**/cart.html");
 
-        page.locator("[data-test='checkout']").click();
-        page.waitForURL("**/checkout-step-one.html");
+        page.waitForURL(
+                "**/cart.html",
+                new Page.WaitForURLOptions().setTimeout(10000)
+        );
+
+        Locator cartItem = page.locator(".cart_item");
+
+        cartItem.first().waitFor(
+                new Locator.WaitForOptions()
+                        .setState(WaitForSelectorState.VISIBLE)
+                        .setTimeout(10000)
+        );
+
+        Assert.assertTrue(
+                cartItem.count() > 0,
+                "Cart should contain a product"
+        );
+
+        Locator checkoutButton = page.locator("[data-test='checkout']");
+
+        checkoutButton.waitFor(
+                new Locator.WaitForOptions()
+                        .setState(WaitForSelectorState.VISIBLE)
+                        .setTimeout(10000)
+        );
+
+        checkoutButton.click();
+
+        page.waitForURL(
+                "**/checkout-step-one.html",
+                new Page.WaitForURLOptions().setTimeout(10000)
+        );
 
         return new CheckoutValidationPage(page);
+    }
+
+    private void printDebugInfo(Page page) {
+        System.out.println("Current URL: " + page.url());
+        System.out.println("Page title: " + page.title());
+
+        try {
+            System.out.println(
+                    "Page content: " + page.locator("body").innerText()
+            );
+        } catch (Exception e) {
+            System.out.println(
+                    "Unable to read page content: " + e.getMessage()
+            );
+        }
+
+        Locator errorMessage = page.locator("[data-test='error']");
+
+        if (errorMessage.isVisible()) {
+            System.out.println(
+                    "Login error: " + errorMessage.innerText()
+            );
+        }
     }
 
     @Test
     public void verifyFirstNameRequiredValidation() {
 
-        Page page = getPage();
-        CheckoutValidationPage checkout = openCheckout(page);
+        CheckoutValidationPage checkout = openCheckout(getPage());
 
         checkout.enterFirstName("");
         checkout.enterLastName("Mali");
@@ -66,8 +153,7 @@ public class CheckoutValidationTest extends BaseTest {
     @Test
     public void verifyLastNameRequiredValidation() {
 
-        Page page = getPage();
-        CheckoutValidationPage checkout = openCheckout(page);
+        CheckoutValidationPage checkout = openCheckout(getPage());
 
         checkout.enterFirstName("Kalpesh");
         checkout.enterLastName("");
@@ -89,8 +175,7 @@ public class CheckoutValidationTest extends BaseTest {
     @Test
     public void verifyPostalCodeRequiredValidation() {
 
-        Page page = getPage();
-        CheckoutValidationPage checkout = openCheckout(page);
+        CheckoutValidationPage checkout = openCheckout(getPage());
 
         checkout.enterFirstName("Kalpesh");
         checkout.enterLastName("Mali");
@@ -112,8 +197,7 @@ public class CheckoutValidationTest extends BaseTest {
     @Test
     public void verifyCheckoutWithValidInformation() {
 
-        Page page = getPage();
-        CheckoutValidationPage checkout = openCheckout(page);
+        CheckoutValidationPage checkout = openCheckout(getPage());
 
         Assert.assertTrue(
                 checkout.isCheckoutInformationPageDisplayed(),

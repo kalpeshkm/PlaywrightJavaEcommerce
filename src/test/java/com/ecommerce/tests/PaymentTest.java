@@ -6,6 +6,8 @@ import com.ecommerce.pages.CheckoutPage;
 import com.ecommerce.pages.PaymentPage;
 
 import com.microsoft.playwright.Locator;
+import com.microsoft.playwright.Page;
+import com.microsoft.playwright.TimeoutError;
 import com.microsoft.playwright.options.WaitForSelectorState;
 
 import org.testng.Assert;
@@ -19,7 +21,16 @@ public class PaymentTest extends BaseTest {
         LoginPage loginPage = new LoginPage(page);
         loginPage.login("standard_user", "secret_sauce");
 
-        page.waitForURL("**/inventory.html");
+        page.waitForURL(
+                "**/inventory.html",
+                new Page.WaitForURLOptions().setTimeout(15000)
+        );
+
+        page.locator(".inventory_list").waitFor(
+                new Locator.WaitForOptions()
+                        .setState(WaitForSelectorState.VISIBLE)
+                        .setTimeout(15000)
+        );
 
         Assert.assertTrue(
                 page.locator(".inventory_list").isVisible(),
@@ -27,29 +38,73 @@ public class PaymentTest extends BaseTest {
         );
 
         Locator addToCartButton =
-                page.locator(".inventory_item button").first();
+                page.locator("[data-test='add-to-cart-sauce-labs-backpack']");
+
+        addToCartButton.waitFor(
+                new Locator.WaitForOptions()
+                        .setState(WaitForSelectorState.VISIBLE)
+                        .setTimeout(10000)
+        );
 
         addToCartButton.click();
 
-        page.locator("#shopping_cart_container a").click();
+        Assert.assertEquals(
+                page.locator(".shopping_cart_badge").innerText(),
+                "1",
+                "Cart should contain one product"
+        );
 
-        page.waitForURL("**/cart.html");
+        page.locator(".shopping_cart_link").click();
+
+        page.waitForURL(
+                "**/cart.html",
+                new Page.WaitForURLOptions().setTimeout(10000)
+        );
+
+        Locator cartItem =
+                page.locator(".cart_item");
+
+        try {
+            cartItem.first().waitFor(
+                    new Locator.WaitForOptions()
+                            .setState(WaitForSelectorState.VISIBLE)
+                            .setTimeout(10000)
+            );
+        } catch (TimeoutError e) {
+            Assert.fail(
+                    "No product appeared in the cart. Current URL: "
+                            + page.url()
+                            + ". Page content: "
+                            + page.locator("body").innerText()
+            );
+        }
 
         Assert.assertTrue(
-                page.locator(".cart_item").count() > 0,
+                cartItem.count() > 0,
                 "No product found in cart"
         );
 
-        Locator checkoutButton = page.locator("#checkout");
+        Assert.assertEquals(
+                cartItem.locator(".inventory_item_name").innerText(),
+                "Sauce Labs Backpack",
+                "Unexpected product found in cart"
+        );
+
+        Locator checkoutButton =
+                page.locator("[data-test='checkout']");
 
         checkoutButton.waitFor(
                 new Locator.WaitForOptions()
                         .setState(WaitForSelectorState.VISIBLE)
+                        .setTimeout(10000)
         );
 
         checkoutButton.click();
 
-        page.waitForURL("**/checkout-step-one.html");
+        page.waitForURL(
+                "**/checkout-step-one.html",
+                new Page.WaitForURLOptions().setTimeout(10000)
+        );
 
         CheckoutPage checkoutPage = new CheckoutPage(page);
 
@@ -61,7 +116,10 @@ public class PaymentTest extends BaseTest {
 
         checkoutPage.clickContinue();
 
-        page.waitForURL("**/checkout-step-two.html");
+        page.waitForURL(
+                "**/checkout-step-two.html",
+                new Page.WaitForURLOptions().setTimeout(10000)
+        );
 
         PaymentPage paymentPage = new PaymentPage(page);
 
@@ -86,18 +144,21 @@ public class PaymentTest extends BaseTest {
         );
 
         Assert.assertFalse(
-                paymentPage.getPaymentInformation().isEmpty(),
+                paymentPage.getPaymentInformation().trim().isEmpty(),
                 "Payment information is missing"
         );
 
         Assert.assertFalse(
-                paymentPage.getShippingInformation().isEmpty(),
+                paymentPage.getShippingInformation().trim().isEmpty(),
                 "Shipping information is missing"
         );
 
         paymentPage.finishOrder();
 
-        page.waitForURL("**/checkout-complete.html");
+        page.waitForURL(
+                "**/checkout-complete.html",
+                new Page.WaitForURLOptions().setTimeout(10000)
+        );
 
         Assert.assertEquals(
                 page.locator(".complete-header").innerText(),
@@ -106,3 +167,4 @@ public class PaymentTest extends BaseTest {
         );
     }
 }
+
