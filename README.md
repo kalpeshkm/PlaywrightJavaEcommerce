@@ -24,6 +24,8 @@ PlaywrightJavaEcommerce/
 ├── reports/
 │   └── ExtentReport.html
 ├── screenshots/
+│   ├── failures/
+│   │   └── verifyPaymentAndOrderSummary_20261009_150723.png
 │   └── extent-report.png
 ├── src/
 │   ├── main/
@@ -36,7 +38,9 @@ PlaywrightJavaEcommerce/
 │               │   ├── ExtentReportManager.java
 │               │   └── TestListener.java
 │               ├── pages/
+│               │   ├── CartValidationPage.java
 │               │   ├── CheckoutPage.java
+│               │   ├── CheckoutValidationPage.java
 │               │   ├── InventoryPage.java
 │               │   ├── LoginPage.java
 │               │   ├── OrderConfirmationPage.java
@@ -44,7 +48,9 @@ PlaywrightJavaEcommerce/
 │               │   └── ProductDetailsPage.java
 │               └── tests/
 │                   ├── CartTest.java
+│                   ├── CartValidationTest.java
 │                   ├── CheckoutTest.java
+│                   ├── CheckoutValidationTest.java
 │                   ├── LoginTest.java
 │                   ├── OrderConfirmationTest.java
 │                   ├── PaymentTest.java
@@ -63,7 +69,9 @@ The framework includes test classes for the following functionalities:
 * **Login Test:** Validates user login functionality.
 * **Product Details Test:** Verifies product information.
 * **Cart Test:** Checks adding products to the shopping cart.
+* **Cart Validation Test:** Validates cart product name, price, quantity, product removal, and checkout button.
 * **Checkout Test:** Validates checkout functionality.
+* **Checkout Validation Test:** Verifies required checkout fields and validation messages.
 * **Payment Test:** Tests the payment process.
 * **Order Confirmation Test:** Verifies order completion.
 
@@ -76,6 +84,8 @@ The framework includes test classes for the following functionalities:
 * Centralized test listener.
 * HTML test execution report.
 * Screenshot of the execution report.
+* Automatic screenshots for failed tests, when configured.
+* Cart product and checkout validation.
 
 ## Prerequisites
 
@@ -137,18 +147,39 @@ After test execution, open `reports/ExtentReport.html` in a web browser to view 
 
 ![Extent Report Screenshot](screenshots/extent-report.png)
 
+## Failure Screenshots
+
+When a test fails, the framework is configured to save a screenshot in the following folder:
+
+```text
+screenshots/failures/
+```
+
+Example:
+
+```text
+screenshots/failures/verifyProductDetailsInCart_<timestamp>.png
+```
+
+The screenshot helps identify the page state at the time of failure.
+
+**Note:** Automatic screenshot capture requires the screenshot logic in `BaseTest.java` or `TestListener.java` to run before the browser page is closed. Screenshots must also be explicitly attached to Extent Reports if they need to appear inside the HTML report.
+
 ## Configuration Files
 
 * `pom.xml` — Maven dependencies and build configuration.
 * `testng.xml` — TestNG suite configuration.
 * `.gitignore` — Specifies files and folders excluded from Git version control.
+* `BaseTest.java` — Browser setup, page initialization, and teardown.
+* `ExtentReportManager.java` — Extent Reports configuration.
+* `TestListener.java` — Test result logging and failure screenshot handling.
 
 ## Future Enhancements
 
 * Add data-driven testing.
 * Add cross-browser testing.
 * Integrate the framework with Jenkins.
-* Add automatic screenshots for failed tests.
+* Improve automatic screenshots and failure reporting.
 * Integrate API testing where required.
 
 ## Author

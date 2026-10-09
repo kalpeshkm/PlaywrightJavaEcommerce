@@ -1,4 +1,3 @@
-
 package com.ecommerce.pages;
 
 import com.microsoft.playwright.Page;
@@ -20,14 +19,12 @@ public class PaymentPage {
         this.page = page;
     }
 
-    // Payment information: SauceCard #31337
     public String getPaymentInformation() {
         return page.locator(paymentInformation)
                 .nth(0)
                 .innerText();
     }
 
-    // Shipping information: Free Pony Express Delivery!
     public String getShippingInformation() {
         return page.locator(paymentInformation)
                 .nth(1)

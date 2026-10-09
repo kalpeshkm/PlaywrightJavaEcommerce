@@ -1,4 +1,3 @@
-
 package com.ecommerce.tests;
 
 import com.ecommerce.base.BaseTest;
@@ -15,21 +14,17 @@ import java.nio.file.Paths;
 public class CartValidationTest extends BaseTest {
     private void loginAndAddProduct(Page page) {
 
-        // Open SauceDemo login page
         page.navigate("https://www.saucedemo.com/");
 
-        // Enter credentials
         page.locator("[data-test='username']")
                 .fill("standard_user");
 
         page.locator("[data-test='password']")
                 .fill("secret_sauce");
 
-        // Click login
         page.locator("[data-test='login-button']")
                 .click();
 
-        // Wait for inventory page
         try {
             page.waitForURL(
                     "**/inventory.html",
@@ -41,7 +36,6 @@ public class CartValidationTest extends BaseTest {
             return;
         }
 
-        // Wait for inventory list to become visible
         try {
             page.locator(".inventory_list").waitFor(
                     new com.microsoft.playwright.Locator.WaitForOptions()
@@ -59,21 +53,17 @@ public class CartValidationTest extends BaseTest {
             return;
         }
 
-        // Add backpack to cart
         page.locator("[data-test='add-to-cart-sauce-labs-backpack']")
                 .click();
 
-        // Verify cart badge
         Assert.assertEquals(
                 page.locator(".shopping_cart_badge").innerText(),
                 "1",
                 "Cart badge should display 1"
         );
 
-        // Open cart
         page.locator(".shopping_cart_link").click();
 
-        // Wait for cart page
         page.waitForURL(
                 "**/cart.html",
                 new Page.WaitForURLOptions().setTimeout(10000)

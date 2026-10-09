@@ -1,4 +1,3 @@
-
 package com.ecommerce.tests;
 
 import com.ecommerce.base.BaseTest;
@@ -11,10 +10,8 @@ public class CheckoutValidationTest extends BaseTest {
 
     private CheckoutValidationPage openCheckout(Page page) {
 
-        // Open SauceDemo login page
         page.navigate("https://www.saucedemo.com/");
 
-        // Login
         page.locator("[data-test='username']")
                 .fill("standard_user");
 
@@ -24,7 +21,6 @@ public class CheckoutValidationTest extends BaseTest {
         page.locator("[data-test='login-button']")
                 .click();
 
-        // Verify successful login
         page.waitForURL("**/inventory.html");
 
         Assert.assertTrue(
@@ -32,15 +28,12 @@ public class CheckoutValidationTest extends BaseTest {
                 "Inventory page should be displayed"
         );
 
-        // Add product to cart
         page.locator("[data-test='add-to-cart-sauce-labs-backpack']")
                 .click();
 
-        // Open cart
         page.locator(".shopping_cart_link").click();
         page.waitForURL("**/cart.html");
 
-        // Click checkout
         page.locator("[data-test='checkout']").click();
         page.waitForURL("**/checkout-step-one.html");
 

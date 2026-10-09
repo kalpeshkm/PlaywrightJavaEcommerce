@@ -1,4 +1,3 @@
-
 package com.ecommerce.tests;
 
 import com.ecommerce.base.BaseTest;
@@ -17,7 +16,6 @@ public class PaymentTest extends BaseTest {
     @Test
     public void verifyPaymentAndOrderSummary() {
 
-        // Step 1: Login
         LoginPage loginPage = new LoginPage(page);
         loginPage.login("standard_user", "secret_sauce");
 
@@ -28,24 +26,20 @@ public class PaymentTest extends BaseTest {
                 "Inventory page was not displayed"
         );
 
-        // Step 2: Add first product to cart
         Locator addToCartButton =
                 page.locator(".inventory_item button").first();
 
         addToCartButton.click();
 
-        // Step 3: Open cart
         page.locator("#shopping_cart_container a").click();
 
         page.waitForURL("**/cart.html");
 
-        // Step 4: Verify cart
         Assert.assertTrue(
                 page.locator(".cart_item").count() > 0,
                 "No product found in cart"
         );
 
-        // Step 5: Find and click Checkout
         Locator checkoutButton = page.locator("#checkout");
 
         checkoutButton.waitFor(
@@ -57,7 +51,6 @@ public class PaymentTest extends BaseTest {
 
         page.waitForURL("**/checkout-step-one.html");
 
-        // Step 6: Enter customer details
         CheckoutPage checkoutPage = new CheckoutPage(page);
 
         checkoutPage.enterCustomerDetails(
@@ -70,7 +63,6 @@ public class PaymentTest extends BaseTest {
 
         page.waitForURL("**/checkout-step-two.html");
 
-        // Step 7: Verify order summary
         PaymentPage paymentPage = new PaymentPage(page);
 
         Assert.assertTrue(
@@ -103,7 +95,6 @@ public class PaymentTest extends BaseTest {
                 "Shipping information is missing"
         );
 
-        // Step 8: Finish order
         paymentPage.finishOrder();
 
         page.waitForURL("**/checkout-complete.html");

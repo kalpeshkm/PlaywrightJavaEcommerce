@@ -1,4 +1,3 @@
-
 package com.ecommerce.base;
 
 import com.microsoft.playwright.*;
@@ -35,12 +34,10 @@ public class BaseTest {
         page.navigate("https://www.saucedemo.com/");
     }
 
-    // Allows test classes to access the active Playwright page
     public Page getPage() {
         return page;
     }
 
-    // Capture a screenshot before closing the browser
     @AfterMethod(alwaysRun = true)
     public void tearDown(ITestResult result) {
 

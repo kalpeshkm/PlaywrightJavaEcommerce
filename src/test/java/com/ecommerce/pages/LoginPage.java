@@ -1,4 +1,3 @@
-
 package com.ecommerce.pages;
 
 import com.microsoft.playwright.Page;

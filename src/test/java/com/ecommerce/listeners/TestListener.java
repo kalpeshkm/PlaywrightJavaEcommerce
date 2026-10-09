@@ -1,4 +1,3 @@
-
 package com.ecommerce.listeners;
 
 import com.aventstack.extentreports.ExtentTest;
@@ -76,7 +75,6 @@ public class TestListener implements ITestListener {
 
             if (screenshot != null && Files.exists(screenshot)) {
 
-                // Report is assumed to be reports/ExtentReport.html.
                 String reportImagePath =
                         "../screenshots/failures/"
                                 + screenshot.getFileName();
@@ -121,7 +119,6 @@ public class TestListener implements ITestListener {
 
         Object instance = result.getInstance();
 
-        // Get the Playwright page from the test class.
         if (instance instanceof BaseTest) {
 
             BaseTest baseTest = (BaseTest) instance;
@@ -151,8 +148,6 @@ public class TestListener implements ITestListener {
             }
         }
 
-        // If BaseTest already captured a screenshot before closing
-        // the browser, find the latest screenshot for this test.
         String prefix = result.getMethod()
                 .getMethodName()
                 .replaceAll("[^a-zA-Z0-9_-]", "_") + "_";
