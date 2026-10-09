@@ -91,7 +91,7 @@ Install the following before running the project:
 **1. Clone the repository**
 
 ```bash
-git clone https://github.com/YOUR-USERNAME/PlaywrightJavaEcommerce.git
+git clone https://github.com/kalpeshkm/PlaywrightJavaEcommerce.git
 ```
 
 **2. Open the project**
